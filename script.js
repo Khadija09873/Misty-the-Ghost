@@ -29,7 +29,7 @@ function checkForWinner() {
 
     for (let i = 0; i < winningConditions.length; i++) {
         const [a, b, c] = winningConditions[i];
-        if (board[a] === '' || board[c] === '') {
+        if (board[a] === '') {
             continue;
         }
 
@@ -41,13 +41,13 @@ function checkForWinner() {
     }
 
     if (roundWon) {
-        document.getElementById('status').textContent = 'Player ${currentPlayer} Wins!🎉';
-        gameActiven = false;
+        document.getElementById('status').textContent = `Player ${currentPlayer} Wins! 🎉`;
+        gameActive = false;
         return;
     }
 
     if (!board.includes('')) {
-        document.getElementById('status').textContent = 'It\'s a Draw! 🤝';
+        document.getElementById('status').textContent = "It's a Draw! 🤝";
         gameActive = false;
         return;
     }
@@ -56,7 +56,7 @@ function checkForWinner() {
     document.getElementById('status').textContent = `Player ${currentPlayer}'s Turn`;
 }
 
-function highlightWinningCells(a, b, c,) {
+function highlightWinningCells(a, b, c) {
     document.getElementById(`cell-${a}`).classList.add('winning');
     document.getElementById(`cell-${b}`).classList.add('winning');
     document.getElementById(`cell-${c}`).classList.add('winning');
@@ -66,9 +66,9 @@ function resetGame() {
     board = ['', '', '', '', '', '', '', '', ''];
     currentPlayer = '♚';
     gameActive = true;
-    document.getElementById('status').textContent = 'Player ♚\'s Turn';
+    document.getElementById('status').textContent = "Player ♚'s Turn";
     document.querySelectorAll('.cell').forEach(cell => {
         cell.textContent = '';
         cell.classList.remove('winning');
-    })
+    });
 }

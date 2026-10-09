@@ -7,13 +7,13 @@
 
 /* Body Styling */
 body {
-    font-family: 'Times New Roman', sans-serif;
+    font-family: 'Times New Roman', serif;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: linear-gradient(to bottom, #e0e0e0, #a0d5fa); /* Light gray to light blue gradient */
+    background: linear-gradient(to bottom, #e0e0e0, #a0d5fa);
     color: white;
 }
 
@@ -23,7 +23,7 @@ body {
     background: #ffffff;
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0.2);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     color: #333;
 }
 
@@ -48,14 +48,14 @@ h1 {
     height: 100px;
     background-color: #f5f5f5;
     border: 2px solid #ddd;
-    font-size: 2.5rem;
+    font-size: 3.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: bold;
-    color:#333;
+    color: #333;
 }
 
 /* Cell hover effect */
@@ -66,12 +66,12 @@ h1 {
 
 /* Winning Cells */
 .cell.winning {
-    background-color: rgb(68, 204, 159); /* Green for winning cells */
+    background-color: rgb(68, 204, 159);
     color: white;
-    animation: glow is infinite alternate;
+    animation: glow 1s infinite alternate;
 }
 
-@keyframes glow{
+@keyframes glow {
     from {
         box-shadow: 0 0 5px white;
     }
@@ -90,7 +90,7 @@ h1 {
 #resetButton {
     padding: 10px 20px;
     font-size: 1.2rem;
-    background-color: #004d79; /* Dark Teal */
+    background-color: #004d79;
     color: white;
     border: none;
     border-radius: 10px;
@@ -107,20 +107,4 @@ footer {
     margin-top: 20px;
     font-size: 0.9rem;
     color: #555;
-}
-
-/* Cells */
-.cell {
-    width: 100px;
-    height: 100px;
-    background-color: #f5f5f5;
-    border: 2px solid #ddd;
-    font-size: 3.5rem; /* Increased font size for larger icons */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: bold;
-    color: #333;
 }
