@@ -9,6 +9,25 @@
 <body>
     <div class="container">
         <h1>Twic Twac Twoe</h1>
+        
+        <div class="controls">
+            <select id="mode" oncharge="changeSettings()">
+                <option value="computer">vs Computer</option>
+                <option vatue="two">2 Players</option>
+            </select>
+            <select id="difficulty" onchange="changeSettings()">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
+
+        <div class="scoreboard">
+            <div class="score"><span>♚</span><strong id="score-king">0</strong></div>
+            <div class="score"><span>🤝</span><strong id="score-draw">0</strong></div>
+            <div class="score"><span>♘</span><strong id="score-knight">0</strong></div>
+        </div>
+
         <div class="game-board">
             <div class="cell" id="cell-0" onclick="makeMove(0)"></div>
             <div class="cell" id="cell-1" onclick="makeMove(1)"></div>
@@ -21,11 +40,14 @@
             <div class="cell" id="cell-8" onclick="makeMove(8)"></div>
         </div>
         <p id="status">Player ♚'s Turn</p>
-        <button id="resetButton" onclick="resetGame()">Reset Game</button>
+        <div class="buttons">
+            <button id="resetButton" onclick="resetGame()">New Round</button>
+            <button id="resetScoresButton" onclick="resetScore()">Reset Scores</button>
+        </div>
     </div>
 
     <footer>
-        <p>Created with Mysterious Power by Misty the Ghost "👻"</p>
+        <p>Created with Mysterious Power by Misty the Ghost 👻</p>
     </footer>
 
     <script src="script.js"></script>
