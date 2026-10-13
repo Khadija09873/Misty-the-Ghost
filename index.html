@@ -9,11 +9,11 @@
 <body>
     <div class="container">
         <h1>Twic Twac Twoe</h1>
-        
+
         <div class="controls">
-            <select id="mode" oncharge="changeSettings()">
+            <select id="mode" onchange="changeSettings()">
                 <option value="computer">vs Computer</option>
-                <option vatue="two">2 Players</option>
+                <option value="two">2 Players</option>
             </select>
             <select id="difficulty" onchange="changeSettings()">
                 <option value="easy">Easy</option>
@@ -39,16 +39,26 @@
             <div class="cell" id="cell-7" onclick="makeMove(7)"></div>
             <div class="cell" id="cell-8" onclick="makeMove(8)"></div>
         </div>
-        <p id="status">Player ♚'s Turn</p>
+
+        <p id="status">Your turn ♚</p>
+
         <div class="buttons">
             <button id="resetButton" onclick="resetGame()">New Round</button>
-            <button id="resetScoresButton" onclick="resetScore()">Reset Scores</button>
+            <button id="resetScoresButton" onclick="resetScores()">Reset Scores</button>
         </div>
     </div>
 
     <footer>
-        <p>Created with Mysterious Power by Misty the Ghost 👻</p>
+        <p>Created with Mysterious Power by Misty the Ghost "👻"</p>
     </footer>
+
+    <div id="modal" class="modal" style="display:none;">
+        <div class="modal-box">
+            <h2 id="modal-title"></h2>
+            <p id="modal-text"></p>
+            <button id="modalButton" onclick="resetGame()">Play Again</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

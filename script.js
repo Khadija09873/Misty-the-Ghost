@@ -56,11 +56,11 @@ function resetScores() {
 function showModal(title, text) {
     document.getElementById('modal-title').textContent = title;
     document.getElementById('modal-text').textContent = text;
-    document.getElementById('modal').classList.remove('hidden');
+    document.getElementById('modal').style.display = 'flex';
 }
 
 function closeModal() {
-    document.getElementById('modal').classList.add('hidden');
+    document.getElementById('modal').style.display = 'none';
 }
 
 /* ---------- Game flow ---------- */
