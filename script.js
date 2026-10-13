@@ -1,7 +1,7 @@
-const KING = '♚';
-const KNIGHT = '♘';
+var KING = '♚';
+var KNIGHT = '♘';
 
-const winningConditions = [
+var winningConditions = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -9,26 +9,28 @@ const winningConditions = [
     [1, 4, 7],
     [2, 5, 8],
     [0, 4, 8],
-    [2, 4, 6],
+    [2, 4, 6]
 ];
 
-let board = Array(9).fill('');
-let currentPlayer = KING;
-let gameActive = true;
-let computerThinking = false;
-let computerTimeout = null;
-let mode = 'computer';
-let difficulty = 'medium';
-let scores = loadScores();
+var board = ['', '', '', '', '', '', '', '', ''];
+var currentPlayer = KING;
+var gameActive = true;
+var computerThinking = false;
+var computerTimeout = null;
+var mode = 'computer';
+var difficulty = 'medium';
+var scores = loadScores();
 
-const statusEI = document.getElementById('status');
+var statusEl = document.getElementById('status');
+
+/* ---------- Scores ---------- */
 
 function loadScores() {
     try {
-        const saved = JSON.parse(localStorage.getItem('misty-ttt-scores'));
+        var saved = JSON.parse(localStorage.getItem('misty-ttt-scores'));
         if (saved) return saved;
     } catch (e) {}
-    return { king: 0, knight: 0, draw:0 };
+    return { king: 0, knight: 0, draw: 0 };
 }
 
 function saveScores() {
@@ -44,12 +46,24 @@ function updateScoreboard() {
 }
 
 function resetScores() {
-    scores = { king: 0, knight:0, draw:0 };
+    scores = { king: 0, knight: 0, draw: 0 };
     saveScores();
     updateScoreboard();
 }
 
-/* ---------- Game Flow ---------- */
+/* ---------- Pop-up ---------- */
+
+function showModal(title, text) {
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-text').textContent = text;
+    document.getElementById('modal').classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('modal').classList.add('hidden');
+}
+
+/* ---------- Game flow ---------- */
 
 function changeSettings() {
     mode = document.getElementById('mode').value;
@@ -60,18 +74,20 @@ function changeSettings() {
 
 function updateStatus() {
     if (mode === 'computer') {
-        statusEI.textContent = currentPlayer === KING
-            ? 'Your Turn ♚'
-            : 'Computer ♘ is thinking...';    
+        if (currentPlayer === KING) {
+            statusEl.textContent = 'Your turn ' + KING;
+        } else {
+            statusEl.textContent = 'Computer ' + KNIGHT + ' is thinking...';
+        }
     } else {
-        statusEI.textContent = `Player ${currentPlayer}'s Turn`;
+        statusEl.textContent = 'Player ' + currentPlayer + "'s Turn";
     }
-    statusEI.className = currentPlayer === KING ? 'king-turn' : 'knight-turn';
+    statusEl.className = (currentPlayer === KING) ? 'king-turn' : 'knight-turn';
 }
 
-function placePiece(index){
+function placePiece(index) {
     board[index] = currentPlayer;
-    const cell = document.getElementById(`cell-${index}`);
+    var cell = document.getElementById('cell-' + index);
     cell.textContent = currentPlayer;
     cell.classList.add('pop');
 }
@@ -80,7 +96,6 @@ function makeMove(index) {
     if (board[index] !== '' || !gameActive || computerThinking) {
         return;
     }
-
 
     placePiece(index);
     checkForWinner();
@@ -91,9 +106,12 @@ function makeMove(index) {
     }
 }
 
-function getWinnerLine(b) {
-    for (const {a, c, d,} of winningConditions) {
-        if (b[a] !== '' && b[c] && b[c] === b[d] ) {
+function getWinningLine(b) {
+    for (var i = 0; i < winningConditions.length; i++) {
+        var a = winningConditions[i][0];
+        var c = winningConditions[i][1];
+        var d = winningConditions[i][2];
+        if (b[a] !== '' && b[a] === b[c] && b[c] === b[d]) {
             return [a, c, d];
         }
     }
@@ -101,90 +119,116 @@ function getWinnerLine(b) {
 }
 
 function checkForWinner() {
-    const line = getWinningLine(board);
+    var line = getWinningLine(board);
 
     if (line) {
-        highlightWinningCells(...line);
+        highlightWinningCells(line[0], line[1], line[2]);
         gameActive = false;
-        statusEI.className = '';
+        statusEl.className = '';
 
-        if (currentPlayer === KING) scores.king++;
-        else score.knight++;
+        var title;
+        var text;
 
-        if (mode === 'computer') {
-            statusEI.textContent = currentPlayer === KING 
-                'You Win! 🎉';
-                'Computer Wins! 🤖';
+        if (currentPlayer === KING) {
+            scores.king++;
         } else {
-            statusEI.textContent = 'Player ${currentPlayer} Wins!! 🎉';
+            scores.knight++;
         }
 
+        if (mode === 'computer') {
+            if (currentPlayer === KING) {
+                title = 'You win! 🎉';
+                text = 'The King takes the crown.';
+            } else {
+                title = 'Computer wins! 🤖';
+                text = 'The Knight got you this time.';
+            }
+        } else {
+            title = 'Player ' + currentPlayer + ' wins! 🎉';
+            text = 'Nice game!';
+        }
+
+        statusEl.textContent = title;
         saveScores();
         updateScoreboard();
-        launchMisty();
+        launchGhosts();
+        setTimeout(function () {
+            showModal(title, text);
+        }, 900);
         return;
     }
 
-    if (!board.includes('')) {
-        statusEI.textContent = "It's a Draw! 🤝";
-        statusEI.className= '';
+    if (board.indexOf('') === -1) {
+        statusEl.textContent = "It's a Draw! 🤝";
+        statusEl.className = '';
         gameActive = false;
         scores.draw++;
         saveScores();
         updateScoreboard();
-        return
+        setTimeout(function () {
+            showModal("It's a draw! 🤝", 'Nobody wins this round.');
+        }, 500);
+        return;
     }
 
-    currentPlayer = currentPlayer === KING ? KNIGHT : KING;
+    currentPlayer = (currentPlayer === KING) ? KNIGHT : KING;
     updateStatus();
 }
 
 function highlightWinningCells(a, b, c) {
-    document.getElementById( `cell-${a}` ).classList.add('winning');
-    document.getElementById( `cell-${b}` ).classList.add('winning');
-    document.getElementById( `cell-${c}` ).classList.add('winning');
+    document.getElementById('cell-' + a).classList.add('winning');
+    document.getElementById('cell-' + b).classList.add('winning');
+    document.getElementById('cell-' + c).classList.add('winning');
 }
 
 function resetGame() {
-     clearTimeout(computerTimeout);
+    clearTimeout(computerTimeout);
     computerThinking = false;
-    board = Array(9).fill('');
+    closeModal();
+    board = ['', '', '', '', '', '', '', '', ''];
     currentPlayer = KING;
     gameActive = true;
-    document.querySelectorAll('.cell').forEach(cell => {
-        cell.textContent = '';
-        cell.classList.remove('winning', 'pop');
-    });
+    var cells = document.querySelectorAll('.cell');
+    for (var i = 0; i < cells.length; i++) {
+        cells[i].textContent = '';
+        cells[i].classList.remove('winning');
+        cells[i].classList.remove('pop');
+    }
     updateStatus();
 }
 
 /* ---------- Computer player ---------- */
 
 function emptyCells(b) {
-    return b.map((v, i) => (v === '' ? i : null)).filter(i => i !== null);
+    var result = [];
+    for (var i = 0; i < b.length; i++) {
+        if (b[i] === '') result.push(i);
+    }
+    return result;
 }
 
-// Returns a cell index that would win for player, or null
 function findWinningMove(player) {
-    for (const i of emptyCells(board)) {
-        board[i] = player;
-        const wins = getWinningLine(board) !== null;
-        board[i] = '';
-        if (wins) return i;
+    var options = emptyCells(board);
+    for (var i = 0; i < options.length; i++) {
+        var idx = options[i];
+        board[idx] = player;
+        var wins = getWinningLine(board) !== null;
+        board[idx] = '';
+        if (wins) return idx;
     }
     return null;
 }
 
 function randomMove() {
-    const options = emptyCells(board);
+    var options = emptyCells(board);
     return options[Math.floor(Math.random() * options.length)];
 }
 
 function mediumMove() {
-    const win = findWinningMove(KNIGHT);
+    var win = findWinningMove(KNIGHT);
     if (win !== null) return win;
 
-    const block = findWinningMove(KING);
+    var block = findWinningMove(KING);
     if (block !== null) return block;
 
     if (board[4] === '') return 4;
@@ -192,32 +236,36 @@ function mediumMove() {
 }
 
 function minimax(b, isComputerTurn, depth) {
-    const line = getWinningLine(b);
+    var line = getWinningLine(b);
     if (line) {
-        return b[line[0]] === KNIGHT ? 10 - depth : depth - 10;
+        return (b[line[0]] === KNIGHT) ? 10 - depth : depth - 10;
     }
-    if (!b.includes('')) return 0;
+    if (b.indexOf('') === -1) return 0;
 
-    let best = isComputerTurn ? -Infinity : Infinity;
-    for (const i of emptyCells(b)) {
-        b[i] = isComputerTurn ? KNIGHT : KING;
-        const score = minimax(b, !isComputerTurn, depth + 1);
-        b[i] = '';
+    var best = isComputerTurn ? -Infinity : Infinity;
+    var options = emptyCells(b);
+    for (var i = 0; i < options.length; i++) {
+        var idx = options[i];
+        b[idx] = isComputerTurn ? KNIGHT : KING;
+        var score = minimax(b, !isComputerTurn, depth + 1);
+        b[idx] = '';
         best = isComputerTurn ? Math.max(best, score) : Math.min(best, score);
     }
     return best;
 }
 
 function hardMove() {
-    let bestScore = -Infinity;
-    let bestIndex = null;
-    for (const i of emptyCells(board)) {
-        board[i] = KNIGHT;
-        const score = minimax(board, false, 0);
-        board[i] = '';
+    var bestScore = -Infinity;
+    var bestIndex = null;
+    var options = emptyCells(board);
+    for (var i = 0; i < options.length; i++) {
+        var idx = options[i];
+        board[idx] = KNIGHT;
+        var score = minimax(board, false, 0);
+        board[idx] = '';
         if (score > bestScore) {
             bestScore = score;
-            bestIndex = i;
+            bestIndex = idx;
         }
     }
     return bestIndex;
@@ -226,7 +274,7 @@ function hardMove() {
 function computerMove() {
     if (!gameActive) return;
 
-    let index;
+    var index;
     if (difficulty === 'easy') index = randomMove();
     else if (difficulty === 'medium') index = mediumMove();
     else index = hardMove();
@@ -239,15 +287,17 @@ function computerMove() {
 /* ---------- Win animation ---------- */
 
 function launchGhosts() {
-    const symbols = ['👻', '👻', '👻', '✨', '♚', '♘'];
-    for (let i = 0; i < 25; i++) {
-        const el = document.createElement('span');
-        el.className = 'ghost-float';
-        el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-        el.style.left = Math.random() * 95 + 'vw';
-        el.style.animationDelay = Math.random() * 1 + 's';
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 4500);
+    var symbols = ['👻', '👻', '👻', '✨', KING, KNIGHT];
+    for (var i = 0; i < 25; i++) {
+        (function () {
+            var el = document.createElement('span');
+            el.className = 'ghost-float';
+            el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            el.style.left = (Math.random() * 95) + 'vw';
+            el.style.animationDelay = (Math.random() * 1) + 's';
+            document.body.appendChild(el);
+            setTimeout(function () { el.remove(); }, 4500);
+        })();
     }
 }
 
