@@ -49,6 +49,7 @@ function resetScores() {
     scores = { king: 0, knight: 0, draw: 0 };
     saveScores();
     updateScoreboard();
+    resetGame();
 }
 
 /* ---------- Pop-up ---------- */
